@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="../assets/react-with-addons.js"></script>
+    <script src="../assets/JSXTransformer.js"></script>  
+    <script src="../assets/jquery.js"></script>
+    <script src="../assets/firebase.js"></script>
+    <script src="../assets/helper-name-gen.js"></script>
+    <link rel="stylesheet" type="text/css" href="../assets/name-gen.css">
+    <script>var Ref = new Firebase("https://ehc-playground.firebaseio.com/words");</script>  
+  </head>
+  
+  <title> Name Generator</title>
+  
+    
+  <body>
+    <header>
+        <img id="logo" src="../assets/images/ehclogo.png" alt="EggHead Creative Logo" />
+    </header>  
+    
+    <div id="container"></div>
+   
+   <script type="text/jsx">
+    var GenContainer = React.createClass({
+    getInitialState: function() {
+        return {
+            querytext: '',
+            suffixWords: [],
+            prefixWords: [],
+            submitted: false
+        };
+    },
+    
+    handleInput: function(q, submitted) {
+        //var data = [];
+        if(submitted){                   
+             //data = this.handleSubmit(q);
+             this.handleSubmit(q);
+        }
+              
+        //this.changeState(q, data, [],submitted);
+        this.changeState(q, [], [],submitted);
+    },
+    
+    changeState: function(q, suffixWords, prefixWords,submitted){                    
+        this.setState({
+            querytext: q,
+            suffixWords: suffixWords,
+            prefixWords: prefixWords,
+            submitted: submitted
+        });
+    },
+
+    handleSubmit: function(q){
+            var _self = this;
+            var prefix = getPrefix(q);           
+            var suffix = getSuffix(q, prefix.length);
+            var suffixWords = [];
+            var prefixWords = [];
+            
+            Ref.orderByKey().startAt(suffix).limitToFirst(150).once("value", function(data) {
+                    data.forEach(function(w) {
+                        suffixWords.push(w.key());
+                    });
+                         Ref.orderByKey().endAt(prefix).limitToFirst(150).once("value", function(data) {
+                              data.forEach(function(w) {
+                                      prefixWords.push(w.key());
+                              });        
+                               
+                   _self.changeState(q, suffixWords, prefixWords, true);
+                });
+            });
+//return  suffixWords = ["abide", "aide", "algaecide", "alongside", "amide", "aside", "astride", "bedside", "beside", "betide", "bide", "bride", "broadside", "bromide", "chide", "coincide", "collide", "confide", "countryside", "decide", "deride", "dioxide", "divide", "fireside", "glide", "guide", "hide", "hillside", "inside", "microbicide", "misguide", "nationwide", "noontide", "nucleotide", "outside", "override", "oxide", "preside", "pride", "provide", "reside", "ride", "riverside", "roadside", "seaside", "side", "slide", "stride", "subdivide", "subside", "suicide", "tide", "upside", "wayside", "wide", "worldwide"];
+    },
+    
+    render: function(){
+        var content = [<GenInpBox value={this.state.querytext} onUserInput={this.handleInput} submitted={this.state.submitted}/>];
+        var klass = "content-bef-sbmt";
+        if (this.state.submitted){
+           content.push(<GenNameBox suffixWords={this.state.suffixWords} prefixWords={this.state.prefixWords} q={this.state.querytext}/>);
+           klass = "content-aft-sbmt";
+        }
+              
+        return ( <div id="content" className={klass}>{content}</div> ); 
+    }
+    });
+    
+    var GenInpBox =  React.createClass({  
+    handleChange: function(e){
+          this.props.onUserInput(e.target.value,false);
+    },
+     
+    handleSubmit: function(e) {
+        e.preventDefault();
+        this.props.onUserInput(this.refs.querytext.getDOMNode().value,true);
+    },
+    
+    render: function(){
+        var cx = React.addons.classSet;
+        var fKlass = cx({
+            'f-bef-sbmt': !this.props.submitted,
+            'f-aft-sbmt': this.props.submitted          
+        });
+        var iKlass = cx({
+            'i-bef-sbmt': !this.props.submitted,
+            'i-aft-sbmt': this.props.submitted
+        });
+        
+        return (
+                <form onSubmitCapture={this.handleSubmit} className={fKlass}>
+                    <input type="text"
+                        placeholder="Describe Your App In 1 Word" 
+                        value={this.props.value}
+                        ref="querytext" 
+                        onChange={this.handleChange}                
+                        title="Invalid Input. Only Alphabets (A-Z)"
+                        pattern="[a-zA-Z]*"
+                        className={iKlass}
+                    />   
+                </form>      
+            );
+        }
+    });
+    
+    var GenNameBox =  React.createClass({
+    render: function(){
+             var row = [];
+             var word;
+            
+             var prefix = getPrefix(this.props.q);
+             prefix = toTitleCase(prefix);
+             this.props.suffixWords.forEach(function(suffix){
+                word = prefix + suffix;
+                row.push(<GenNames gname={word}/>)
+             });
+             
+             var suffix = getSuffix(this.props.q,prefix.length);
+             suffix = toTitleCase(suffix);
+             this.props.prefixWords.forEach(function(prefix){
+                word = prefix + suffix;
+                row.push(<GenNames gname={word}/>)
+             });     
+               
+            return (
+                <div className="nameBox">
+                    {row}                   
+                </div>
+            )
+        }
+    });
+    
+    var GenNames =  React.createClass({
+     render: function(){
+          return (
+                <h3>{this.props.gname}</h3>
+           )
+        }
+      });
+      
+    React.render(<GenContainer/>, document.getElementById('container'));
+
+    </script>
+  </body>
+  <footer>© 2015 <a href="http://www.eggheadcreative.com/">Egghead Creative, Inc.</a> All Rights Reserved. </footer>
+</html>
