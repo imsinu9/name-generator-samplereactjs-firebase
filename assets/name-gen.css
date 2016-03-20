@@ -1,0 +1,32 @@
+/* CSS Document */
+ body { margin: 0px;}
+ header {width:100%; height:70px; background: #363636}
+ #logo{margin: 4px 4px 4px 15px; padding:15px 15px 20px 15px;}
+ .nameBox{ border : 1px solid black ;}
+ #content{ min-height:530px; margin-top:4px;}
+ .content-bef-sbmt{ background : url("images/bk-nm-gen.gif") no-repeat; background-position: center;opacity: 0.5;}
+ .content-aft-sbmt{ background: none;  }
+ form{}
+ .f-bef-sbmt{margin-left: 25%; margin-top:6%;}
+ .f-aft-sbmt{margin-left: 0%; margin-top:0%; background: #92A16B; color: white;}
+ input {
+  display: inline-block;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  width: 550px;
+  padding: 10px 20px;
+  font: normal normal bold 30px/normal "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  -o-text-overflow: clip;
+  text-overflow: clip;
+  text-shadow: 1px 1px 0 rgba(255,255,255,0.66) ;
+  -webkit-transition: all 1100ms cubic-bezier(0.42, 0, 0.58, 1);
+  -moz-transition: all 1100ms cubic-bezier(0.42, 0, 0.58, 1);
+  -o-transition: all 1100ms cubic-bezier(0.42, 0, 0.58, 1);
+  transition: all 1100ms cubic-bezier(0.42, 0, 0.58, 1);
+}
+input:focus{outline: none;}
+.i-bef-sbmt{color: black;border: 2px solid #1efc34;  -webkit-box-shadow: 2px 2px 2px 0 rgba(0,0,0,0.2) inset;box-shadow: 2px 2px 2px 0 rgba(0,0,0,0.2) inset;}
+.i-aft-sbmt{background: #92A16B;color: white;  -webkit-box-shadow: 0px 0px 0px 0 rgba(0,0,0,0.2) inset;box-shadow: 0px 0px 0px 0 rgba(0,0,0,0.2) inset;border: 0px;margin-left: 40%;}
+footer{min-height:18px;background: #3f3f3f; border-top: 1px solid #484848;font-family: monospace;color: #aaa; text-align: center; }
+footer a{color: white; text-decoration : none ;}
